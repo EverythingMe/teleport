@@ -45,6 +45,8 @@ support for https://luminati.io/ p2p proxy service provider
         do_stuff(proxy, proxy_auth)
 ```
 
-config is a python dict that specifies providers (please see config/config.yaml example in the examples folder) and the t.is_proxy is to determine if the teleportation was done with a proxy, and if so, you'll want to pass the proxy and proxy_auth variables to whatever is making the http requests, (i.e requests/curl)
+```config``` is a python dict that specifies providers (please see config/config.yaml example in the examples folder) and the t.is_proxy is to determine if the teleportation was done with a proxy, and if so, you'll want to pass the proxy and proxy_auth variables to whatever is making the http requests, (i.e requests/curl)
+
+```dns_servers``` is a list of dns servers, it is needed to we can exclude them from the firewall rules, so we can make dns requests, you could use that if you want to exclude other ips too.
 
 please checkout the example.py file in the examples directory for a more detailed example, it also includes a sample configuration file and the basic config directory structure
