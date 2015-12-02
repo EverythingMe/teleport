@@ -1,49 +1,36 @@
+# teleport
 
+## what?
 
+teleport is a python library that provides a context manager to execute code with in the context of a specific country, it is intented to run inside a docker container as it takes over the entire network "namespace".
 
-example config:
+## why?
 
-```yaml
-providers:
-  -
-    type: hidemyass
-    name: hidemyass
-    priority: 50
-    debug: false
-  
-    params:
-      concurrency: 5
-      bucket_name: dosa
-      auth-user-pass: /config/creds/hidemyass.passwd
-      ca: /config/creds/hidemyass.ca
-      cert: /config/creds/hidemyass.cert
-      key: /config/creds/hidemyass.pem
-  
-    countries: !include hma_hosts.yaml
-  -
-    type: vpn
-    name: ipvanish
-    priority: 10
-    debug: false
-  
-    params:
-      auth-user-pass: /config/creds/ipvanish.passwd
-      ca: /config/creds/ipvanish.ca
-      auth: SHA256
-      cipher: AES-256-CBC
-      comp-lzo: ''
-      keysize: 256
-      tls-cipher: DHE-RSA-AES256-SHA:DHE-DSS-AES256-SHA:AES256-SHA
-      tls-remote: true
-    
-    countries: !include ipv_hosts.yaml
-  
-  -
-    type: luminati
-    name: luminati
-    priority: 100
-    debug: false
+a typical use case for teleport would be when a service returns different results based on geographic location, for example when doing an app search in google's playstore it will show search results only if app is available to the country google things you're searching from.
 
-    username: LUMINATI_USERNAME
-    password: LUMINATI_PASSWORD
-```
+## how?
+
+it's basically an absration above vpns and proxies, these are called 'providers' and a basic provider has a name, type, what countries it can 'teleport' to and its proiority. so when asked to teleport to a country, the context manager:
+
+1. goes over the list of providers that can teleport there, and by the order of priority tries teleporting. 
+2. after teleportation established it verifies that networking is indeed ip->geo resolves to the specified location
+3. then it make sure no networking could 'leak' outside the vpn/proxy by setting iptables rules
+4. when context manager exists, it undoes the vpn and firewall.
+
+## plugins
+
+### ipvanish
+
+support for https://www.ipvanish.com vpn service provider (tools folder includes a script to generate ipvanish configuration map of country code to vpn ips)
+
+### hidemyass
+
+support for https://www.hidemyass.com vpn service provider, it also includes a distributed concurrency limiter on top of https://consul.io/ (tools folder includes a script to generate hidemyass configuration map of country code to vpn ips)
+
+### luminati
+
+support for https://luminati.io/ p2p proxy service provider
+
+## usage:
+
+please checkout the example.py file in the examples directory, it also includes a sample configuration file and the basic config directory structure
