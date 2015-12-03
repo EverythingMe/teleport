@@ -6,7 +6,7 @@ teleport is a python library that provides a context manager to execute code wit
 
 ## why?
 
-a typical use case for teleport would be when a service returns different results based on geographic location, for example when doing an app search in google's playstore it will show search results only if app is available to the country google things you're searching from.
+a typical use case for teleport would be when you have users from all over the world and you're serving some 3rd party content that's uses client's ip to resolve its geo location so with teleport + docker you could run all sorts of tests that need to run in a country specific context.
 
 ## how?
 
